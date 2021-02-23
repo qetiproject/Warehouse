@@ -10,6 +10,9 @@ namespace Warehouse.DatabaseEntity.DB
         IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public DbSet<Product> Products { get; set; }
+        public DbSet<Shop> Shops { get; set; }
+        public DbSet<ProductInShop> ProductInShops { get; set; }
+        public DbSet<ShopType> ShopTypes { get; set; }
 
         public ApplicationDbContext() { }
         public ApplicationDbContext(DbContextOptions options) : base(options) { }

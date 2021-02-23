@@ -2,7 +2,7 @@
 
 namespace Warehouse.DomainModels.Models
 {
-    public class IdentityUser
+    public class BaseEntity
     {
         [Key]
         public int Id { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace Warehouse.DomainModels.Models
 {
-    public class Product:IdentityUser
+    public class Product: BaseEntity
     {
         public string Name { get; set; }
         public int Count { get; set; }

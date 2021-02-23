@@ -130,9 +130,32 @@ namespace Warehouse.DatabaseEntity.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
+                    b.Property<int?>("ProductInShopId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("ProductInShopId");
+
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Warehouse.DomainModels.Models.ProductInShop", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShopId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductInShops");
                 });
 
             modelBuilder.Entity("Warehouse.DomainModels.Models.Role", b =>
@@ -162,6 +185,52 @@ namespace Warehouse.DatabaseEntity.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("Warehouse.DomainModels.Models.Shop", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ProductInShopId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShopTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductInShopId");
+
+                    b.HasIndex("ShopTypeId");
+
+                    b.ToTable("Shops");
+                });
+
+            modelBuilder.Entity("Warehouse.DomainModels.Models.ShopType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShopTypes");
                 });
 
             modelBuilder.Entity("Warehouse.DomainModels.Models.User", b =>
@@ -291,6 +360,28 @@ namespace Warehouse.DatabaseEntity.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Warehouse.DomainModels.Models.Product", b =>
+                {
+                    b.HasOne("Warehouse.DomainModels.Models.ProductInShop", null)
+                        .WithMany("Product")
+                        .HasForeignKey("ProductInShopId");
+                });
+
+            modelBuilder.Entity("Warehouse.DomainModels.Models.Shop", b =>
+                {
+                    b.HasOne("Warehouse.DomainModels.Models.ProductInShop", null)
+                        .WithMany("Shops")
+                        .HasForeignKey("ProductInShopId");
+
+                    b.HasOne("Warehouse.DomainModels.Models.ShopType", "Shoptype")
+                        .WithMany("Shops")
+                        .HasForeignKey("ShopTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shoptype");
+                });
+
             modelBuilder.Entity("Warehouse.DomainModels.Models.UserRole", b =>
                 {
                     b.HasOne("Warehouse.DomainModels.Models.Role", "Role")
@@ -310,9 +401,21 @@ namespace Warehouse.DatabaseEntity.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Warehouse.DomainModels.Models.ProductInShop", b =>
+                {
+                    b.Navigation("Product");
+
+                    b.Navigation("Shops");
+                });
+
             modelBuilder.Entity("Warehouse.DomainModels.Models.Role", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Warehouse.DomainModels.Models.ShopType", b =>
+                {
+                    b.Navigation("Shops");
                 });
 
             modelBuilder.Entity("Warehouse.DomainModels.Models.User", b =>

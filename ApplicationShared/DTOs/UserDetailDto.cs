@@ -2,7 +2,7 @@
 
 namespace ApplicationShared.DTOs
 {
-    public class UserDetailDto : IdentityUser
+    public class UserDetailDto : BaseEntity
     {
         public string UserName { get; set; }
         public string Gender { get; set; }

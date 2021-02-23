@@ -60,11 +60,13 @@ namespace Warehouse.Controllers
 
             return new UserDto
             {
-                Username = user.UserName,
+                UserName = user.UserName,
                 Token = await _tokenService.CreateToken(user),
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Gender = user.Gender
+                PhoneNumber = user.PhoneNumber,
+                Gender = user.Gender,
+                Email = user.Email
             };
         }
 
@@ -88,6 +90,7 @@ namespace Warehouse.Controllers
             return new UserDto
             {
                 Username = user.UserName,
+                Email = user.Email,
                 Token = await _tokenService.CreateToken(user),
                 FirstName = user.FirstName,
                 LastName = user.LastName,

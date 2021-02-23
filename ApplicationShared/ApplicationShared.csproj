@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Warehouse.CoreServices\Warehouse.CoreServices.csproj" />
     <ProjectReference Include="..\Warehouse.DatabaseEntity\Warehouse.DatabaseEntity.csproj" />
     <ProjectReference Include="..\Warehouse.DomainModels\Warehouse.DomainModels.csproj" />
   </ItemGroup>

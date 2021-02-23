@@ -26,9 +26,11 @@ namespace DatingApp.Api.Extensions
             //CleanArchitecture.Application
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IProductService, ProductService>();
 
             //CleanArchitecture.Domain.Interfaces | CleanArchitecture.Infra.Data.Repositories
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IProductRepository, ProductReposiotory>();
 
             return services;
         }

@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationShared\ApplicationShared.csproj" />
     <ProjectReference Include="..\Warehouse.DatabaseEntity\Warehouse.DatabaseEntity.csproj" />
     <ProjectReference Include="..\Warehouse.DomainModels\Warehouse.DomainModels.csproj" />
   </ItemGroup>

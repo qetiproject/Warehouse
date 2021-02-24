@@ -1,38 +1,38 @@
 ﻿using ApplicationShared.DTOs;
 using ApplicationShared.DTOs.Product;
 using ApplicationShared.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Warehouse.CoreServices.Interfaces;
 using Warehouse.DatabaseEntity.DB;
 using Warehouse.DomainModels.Models;
 
 namespace Warehouse.Controllers
-{
-    [ApiController]
-    [Route("[controller]")]
+{ 
+    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-        private readonly IProductRepository _productRepository;
         public ApplicationDbContext _context;
 
         public ProductController(
             IProductService productService,
-            IProductRepository productRepository,
             ApplicationDbContext context
         )
         {
             _productService = productService;
-            _productRepository = productRepository;
             _context = context;
         }
 
         [HttpPost("Product")]
-        public async Task<Result> CreateProduct([FromBody] ProductCreateDto productCreate)
+        public async Task<Result> CreateProduct(int userId, [FromBody] ProductCreateDto productCreate)
         {
-            return await _productService.CreateProduct(productCreate);
+            
+            return await _productService.CreateProduct(userId, productCreate);
         }
 
         [HttpGet("Products")]

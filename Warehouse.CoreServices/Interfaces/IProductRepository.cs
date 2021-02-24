@@ -7,7 +7,7 @@ namespace Warehouse.CoreServices.Interfaces
 {
     public interface IProductRepository
     {
-        Task<Result> CreateProduct(ProductCreateDto product);
+        Task<Product> CreateProduct(ProductCreateDto product);
         Task<Result> GetProducts();
         Task<Result> GetProduct(int id);
         Task<Result> UpdateProduct(ProductUpdateDto productUpdate);

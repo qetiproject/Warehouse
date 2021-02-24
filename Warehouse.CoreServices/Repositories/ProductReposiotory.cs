@@ -24,40 +24,10 @@ namespace Warehouse.CoreServices.Repositories
             _mapper = mapper;
         }
 
-        public async Task<Result> CreateProduct(ProductCreateDto productCreate)
+        public async Task<Product> CreateProduct(ProductCreateDto productCreate)
         {
             Product product =  _mapper.Map<Product>(productCreate);
-            Result result = new Result();
-            List<Product> products = await _context.Products.ToListAsync();
-
-            try
-            {
-                if (await ProductExists(productCreate.Name))
-                {
-                    result.Data = null;
-                    result.ErrorMessage = "Product already exists";
-                    result.Code = 404;
-                    result.Success = false;
-                }
-                else
-                {
-                    await _context.Products.AddAsync(product);
-                    await _context.SaveChangesAsync();
-                    result.Data = productCreate;
-                    result.Code = 200;
-                    result.Success = true;
-                    result.Message = "Product created successfull";
-                    result.ListCount = products.Count + 1;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                result.Success = false;
-                result.ErrorMessage = ex.Message;
-                result.Code = ex.HResult;
-            }
-            return result;
+            return product;
         }
 
         public async Task<Result> GetProducts()

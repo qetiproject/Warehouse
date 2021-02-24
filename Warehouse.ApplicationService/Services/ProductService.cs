@@ -1,9 +1,11 @@
 ﻿using ApplicationShared.DTOs;
 using ApplicationShared.DTOs.Product;
 using ApplicationShared.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Warehouse.CoreServices.Interfaces;
 using Warehouse.DatabaseEntity.DB;
@@ -15,19 +17,61 @@ namespace ApplicationShared.Services
     {
         public IProductRepository _productRepository;
         public ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
+
 
         public ProductService(
             IProductRepository productRepository,
+            UserManager<User> userManager,
             ApplicationDbContext context
         )
         {
             _context = context;
             _productRepository = productRepository;
+            _userManager = userManager;
         }
 
-        public async Task<Result> CreateProduct(ProductCreateDto productCreate)
+        public async Task<Result> CreateProduct(int userId, ProductCreateDto productCreate)
         {
-            return await _productRepository.CreateProduct(productCreate);
+            Result result = new Result();
+
+            User user = await _userManager.Users.SingleOrDefaultAsync(x => x.Id == userId);
+
+            List<Product> products = await _context.Products.ToListAsync();
+
+            try
+            {
+                if (user == null)
+                {
+                    result.ErrorMessage = "Unauthorization user";
+                }
+                if (await _productRepository.ProductExists(productCreate.Name))
+                {
+                    result.Data = null;
+                    result.ErrorMessage = "Product already exists";
+                    result.Code = 404;
+                    result.Success = false;
+                }
+                else
+                {
+                    Product product = await _productRepository.CreateProduct(productCreate);
+                    await _context.Products.AddAsync(product);
+                    await _context.SaveChangesAsync();
+                    result.Data = productCreate;
+                    result.Code = 200;
+                    result.Success = true;
+                    result.Message = "Product created successfull";
+                    result.ListCount = products.Count + 1;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.ErrorMessage = ex.Message;
+                result.Code = ex.HResult;
+            }
+            return result;
         }
 
         public async  Task<Result> GetProduct(int id)

@@ -74,26 +74,11 @@ namespace Warehouse.CoreServices.Repositories
             return result;
         }
 
-        public async Task<Result> UpdateProduct(ProductUpdateDto productUpdate)
+        public async Task<Product> UpdateProduct(ProductUpdateDto productUpdate)
         {
-            Result result = new Result();
             Product productById = await _context.Products.FirstOrDefaultAsync(p => p.Id == productUpdate.Id);
 
-            try
-            {
-
-                productById = _mapper.Map(productUpdate, productById);
-                result.Data = productById;
-                result.Message = "Product updated successfull";
-            }
-            catch (Exception ex)
-            {
-                result.Success = false;
-                result.ErrorMessage = ex.Message;
-                result.Code = ex.HResult;
-            }
-
-            return result;
+            return productById;
         }
 
         public async Task<Product> DeleteProduct(int id)

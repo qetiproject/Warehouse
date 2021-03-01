@@ -1,6 +1,7 @@
 ﻿using ApplicationShared.DTOs;
 using ApplicationShared.DTOs.Product;
 using ApplicationShared.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,17 +19,20 @@ namespace ApplicationShared.Services
         public IProductRepository _productRepository;
         public ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly IMapper _mapper;
 
 
         public ProductService(
             IProductRepository productRepository,
             UserManager<User> userManager,
+            IMapper mapper,
             ApplicationDbContext context
         )
         {
             _context = context;
             _productRepository = productRepository;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         public async Task<Result> CreateProduct(int userId, ProductCreateDto productCreate)
@@ -86,7 +90,33 @@ namespace ApplicationShared.Services
 
         public async Task<Result> UpdateProduct(ProductUpdateDto productUpdate)
         {
-            return await _productRepository.UpdateProduct(productUpdate);
+            Result result = new Result();
+
+            Product productById = await _productRepository.UpdateProduct(productUpdate);
+            try
+            {
+                if (productById == null)
+                {
+                    result.ErrorMessage = "This product doesn't exist";
+                   
+                }
+                if(await _productRepository.ProductExists(productUpdate.Name))
+                {
+                    productById = _mapper.Map(productUpdate, productById);
+                    await _context.SaveChangesAsync();
+                    result.Data = productById;
+                    result.Message = "Product updated successfull";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.ErrorMessage = ex.Message;
+                result.Code = ex.HResult;
+            }
+
+            return result;
         }
 
         public async Task<Result> DeleteProduct(int id)
@@ -98,19 +128,17 @@ namespace ApplicationShared.Services
 
             try
             {
-                if (productById != null && productById.IsDeleted)
+                if (productById == null)
+                {
+                    result.ErrorMessage = "This product doesn't exist";
+                }
+                else if(productById != null && productById.IsDeleted)
                 {
                     _context.Products.Remove(productById);
                     _context.SaveChanges();
                     result.Data = productById;
                     result.Message = "Product deleted successfull";
                     result.ListCount = products.Count - 1;
-                }
-                else
-                {
-                    result.Code = 404;
-                    result.Success = false;
-                    result.ErrorMessage = "This product doesn't exist";
                 }
             }
             catch (Exception ex)

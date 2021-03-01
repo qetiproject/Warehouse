@@ -55,7 +55,7 @@ namespace Warehouse.Controllers
             if (await _context.SaveChangesAsync() > 0)
                 return updateProduct;
 
-            throw new Exception($"Updating product {productUpdate.Id} failed on save");
+            return updateProduct;
         }
 
         [HttpDelete("Product")]

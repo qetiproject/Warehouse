@@ -15,6 +15,7 @@ namespace Warehouse.CoreServices.Repositories
     {
         public ApplicationDbContext _context;
         private readonly IMapper _mapper;
+
         public ProductReposiotory(
             ApplicationDbContext context,
             IMapper mapper
@@ -74,7 +75,7 @@ namespace Warehouse.CoreServices.Repositories
             return result;
         }
 
-        public async Task<Product> UpdateProduct(ProductUpdateDto productUpdate)
+        public async Task<Product> UpdateProduct(int userId, ProductUpdateDto productUpdate)
         {
             Product productById = await _context.Products.FirstOrDefaultAsync(p => p.Id == productUpdate.Id);
 

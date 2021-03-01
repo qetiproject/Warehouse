@@ -10,7 +10,7 @@ namespace ApplicationShared.Interfaces
         Task<Result> CreateProduct(int userId, ProductCreateDto product);
         Task<Result> GetProducts();
         Task<Result> GetProduct(int id);
-        Task<Result> UpdateProduct(ProductUpdateDto productUpdate);
+        Task<Result> UpdateProduct(int userId, ProductUpdateDto productUpdate);
         Task<Result> DeleteProduct(int id);
     }
 }

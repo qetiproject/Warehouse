@@ -48,9 +48,9 @@ namespace Warehouse.Controllers
         }
 
         [HttpPut("Product")]
-        public async Task<Result> UpdateProduct(ProductUpdateDto productUpdate)
+        public async Task<Result> UpdateProduct(int userId, ProductUpdateDto productUpdate)
         {
-            Result updateProduct = await _productService.UpdateProduct(productUpdate);
+            Result updateProduct = await _productService.UpdateProduct(userId, productUpdate);
 
             if (await _context.SaveChangesAsync() > 0)
                 return updateProduct;

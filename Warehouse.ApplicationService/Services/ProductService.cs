@@ -88,19 +88,21 @@ namespace ApplicationShared.Services
             return await _productRepository.GetProducts();
         }
 
-        public async Task<Result> UpdateProduct(ProductUpdateDto productUpdate)
+        public async Task<Result> UpdateProduct(int userId, ProductUpdateDto productUpdate)
         {
             Result result = new Result();
 
-            Product productById = await _productRepository.UpdateProduct(productUpdate);
+            User user = await _userManager.Users.SingleOrDefaultAsync(x => x.Id == userId);
+
+            Product productById = await _productRepository.UpdateProduct(userId, productUpdate);
             try
             {
-                if (productById == null)
+                if (user == null || productById == null)
                 {
-                    result.ErrorMessage = "This product doesn't exist";
+                    result.ErrorMessage = "This product or user doesn't exist";
                    
                 }
-                if(await _productRepository.ProductExists(productUpdate.Name))
+                if(user != null && await _productRepository.ProductExists(productUpdate.Name))
                 {
                     productById = _mapper.Map(productUpdate, productById);
                     await _context.SaveChangesAsync();
